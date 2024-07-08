@@ -1,0 +1,35 @@
+name: Build ZXBasicStudio
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v1.0.2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: '5.0.x'
+
+      - name: Build solution
+        run: msbuild ZXBasicStudio.sln /p:Configuration=Release
+
+      - name: Archive build artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: ZXBasicStudio
+          path: |
+            **/bin/Release/
